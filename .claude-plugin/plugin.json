@@ -1,11 +1,11 @@
 {
   "name": "andrej-karpathy-skills",
-  "description": "Behavioral guidelines to reduce common LLM coding mistakes, derived from Andrej Karpathy's observations on LLM coding pitfalls",
-  "version": "1.0.0",
+  "description": "Three reminders for LLM coding pitfalls that Claude Code's built-in system prompt does not already cover (stop when confused, every changed line traces to the request, loop on declarative goals). Traditional Chinese (Taiwan) localization fork of forrestchang/andrej-karpathy-skills.",
+  "version": "2.0.0",
   "author": {
-    "name": "forrestchang"
+    "name": "yelban"
   },
   "license": "MIT",
-  "keywords": ["guidelines", "best-practices", "coding", "karpathy"],
+  "keywords": ["guidelines", "best-practices", "coding", "karpathy", "traditional-chinese"],
   "skills": ["./skills/karpathy-guidelines"]
 }

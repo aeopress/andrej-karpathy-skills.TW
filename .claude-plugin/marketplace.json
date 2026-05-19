@@ -2,26 +2,27 @@
   "name": "karpathy-skills",
   "id": "karpathy-skills",
   "owner": {
-    "name": "forrestchang"
+    "name": "yelban"
   },
   "metadata": {
-    "description": "Behavioral guidelines to reduce common LLM coding mistakes, derived from Andrej Karpathy's observations",
-    "version": "1.0.0"
+    "description": "Three reminders for LLM coding pitfalls in Claude Code Opus 4.7+ — Traditional Chinese (Taiwan) localization",
+    "version": "2.0.0"
   },
   "plugins": [
     {
       "name": "andrej-karpathy-skills",
       "source": "./",
-      "description": "Behavioral guidelines to reduce common LLM coding mistakes: Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution",
-      "version": "1.0.0",
+      "description": "Three reminders that complement Claude Code's built-in guidance: stop when confused, every changed line traces to the request, loop on declarative goals. Traditional Chinese (Taiwan) localization fork of forrestchang/andrej-karpathy-skills.",
+      "version": "2.0.0",
       "author": {
-        "name": "forrestchang"
+        "name": "yelban"
       },
       "keywords": [
         "guidelines",
         "best-practices",
         "coding",
-        "karpathy"
+        "karpathy",
+        "traditional-chinese"
       ],
       "category": "workflow"
     }

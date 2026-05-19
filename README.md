@@ -1,170 +1,92 @@
 # Karpathy-Inspired Claude Code Guidelines
 
-> Check out my new project [Multica](https://github.com/multica-ai/multica) — an open-source platform for running and managing coding agents with reusable skills.
->
-> Follow me on X: [https://x.com/jiayuan_jy](https://x.com/jiayuan_jy)
+A small `CLAUDE.md` that complements Claude Code's built-in guidance, derived from [Andrej Karpathy's observations](https://x.com/karpathy/status/2015883857489522876) on LLM coding pitfalls.
 
-A single `CLAUDE.md` file to improve Claude Code behavior, derived from [Andrej Karpathy's observations](https://x.com/karpathy/status/2015883857489522876) on LLM coding pitfalls.
+English | [繁體中文（台灣）](./README.zh-TW.md)
 
-English | [简体中文](./README.zh.md)
+## Status (May 2026)
 
-## The Problems
+Claude Code's system prompt (Opus 4.7 / Sonnet 4.6 era) now includes most of the generic "don't over-engineer / make surgical changes / don't add speculative features" guidance that earlier versions of this skill provided. **This version intentionally keeps only what the system prompt still does not cover, and reframes the "leverage" point as a user-side prompting guide.**
 
-From Andrej's post:
+The earlier full-rules version lives in [`archived/v1/`](./archived/v1/) for reference.
 
-> "The models make wrong assumptions on your behalf and just run along with them without checking. They don't manage their confusion, don't seek clarifications, don't surface inconsistencies, don't present tradeoffs, don't push back when they should."
+## What the assistant gets
 
-> "They really like to overcomplicate code and APIs, bloat abstractions, don't clean up dead code... implement a bloated construction over 1000 lines when 100 would do."
+Three reminders, copied verbatim from [`CLAUDE.md`](./CLAUDE.md):
 
-> "They still sometimes change/remove comments and code they don't sufficiently understand as side effects, even if orthogonal to the task."
+1. **Stop when confused** — if a request is ambiguous, name what is unclear and ask; do not pick an interpretation silently.
+2. **Every changed line should trace to the request** — re-read your diff before reporting done; if a line does not serve the user's stated goal, remove it.
+3. **Loop on declarative goals** — when a verifiable end state exists, drive toward it autonomously.
 
-## The Solution
+That is the entire instruction file. The other pitfalls Karpathy named (overcomplication, drive-by refactors, speculative features, dead-code creep, removing comments the model "doesn't like") are already addressed by Claude Code's default system prompt; duplicating them only dilutes signal.
 
-Four principles in one file that directly address these issues:
+## What the user does — the actual leverage
 
-| Principle | Addresses |
-|-----------|-----------|
-| **Think Before Coding** | Wrong assumptions, hidden confusion, missing tradeoffs |
-| **Simplicity First** | Overcomplication, bloated abstractions |
-| **Surgical Changes** | Orthogonal edits, touching code you shouldn't |
-| **Goal-Driven Execution** | Leverage through tests-first, verifiable success criteria |
+Karpathy's strongest observation is **a user-side discipline**, not something the assistant self-enforces:
 
-## The Four Principles in Detail
+> "LLMs are exceptionally good at looping until they meet specific goals... Don't tell it what to do, give it success criteria and watch it go."
 
-### 1. Think Before Coding
+To unlock this in your own workflow:
 
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
+### Convert imperative → declarative
 
-LLMs often pick an interpretation silently and run with it. This principle forces explicit reasoning:
+| Imperative (weak leverage) | Declarative (strong leverage) |
+|---|---|
+| "Add input validation" | "Write failing tests for these invalid inputs, then make them pass" |
+| "Fix the bug" | "Write a test that reproduces the bug, then make it pass — other tests must still pass" |
+| "Make it faster" | "Reduce p95 latency under this load to <X ms; benchmark with `scripts/bench.sh`" |
+| "Refactor X" | "Refactor X without changing observable behavior; existing tests must still pass" |
 
-- **State assumptions explicitly** — If uncertain, ask rather than guess
-- **Present multiple interpretations** — Don't pick silently when ambiguity exists
-- **Push back when warranted** — If a simpler approach exists, say so
-- **Stop when confused** — Name what's unclear and ask for clarification
+### Give the assistant the means to verify
 
-### 2. Simplicity First
+Together with the goal, hand it the verification tool: a test command, a benchmark script, a lint command, a browser MCP for visual checks. Then leave it to iterate.
 
-**Minimum code that solves the problem. Nothing speculative.**
+### When to use which
 
-Combat the tendency toward overengineering:
-
-- No features beyond what was asked
-- No abstractions for single-use code
-- No "flexibility" or "configurability" that wasn't requested
-- No error handling for impossible scenarios
-- If 200 lines could be 50, rewrite it
-
-**The test:** Would a senior engineer say this is overcomplicated? If yes, simplify.
-
-### 3. Surgical Changes
-
-**Touch only what you must. Clean up only your own mess.**
-
-When editing existing code:
-
-- Don't "improve" adjacent code, comments, or formatting
-- Don't refactor things that aren't broken
-- Match existing style, even if you'd do it differently
-- If you notice unrelated dead code, mention it — don't delete it
-
-When your changes create orphans:
-
-- Remove imports/variables/functions that YOUR changes made unused
-- Don't remove pre-existing dead code unless asked
-
-**The test:** Every changed line should trace directly to the user's request.
-
-### 4. Goal-Driven Execution
-
-**Define success criteria. Loop until verified.**
-
-Transform imperative tasks into verifiable goals:
-
-| Instead of... | Transform to... |
-|--------------|-----------------|
-| "Add validation" | "Write tests for invalid inputs, then make them pass" |
-| "Fix the bug" | "Write a test that reproduces it, then make it pass" |
-| "Refactor X" | "Ensure tests pass before and after" |
-
-For multi-step tasks, state a brief plan:
-
-```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
-```
-
-Strong success criteria let the LLM loop independently. Weak criteria ("make it work") require constant clarification.
+- **Declarative**: features with observable outcomes, bug fixes, performance work, refactors with test coverage.
+- **Imperative**: exploratory edits, UI tweaks, prose, anything where "done" is subjective.
 
 ## Install
 
-**Option A: Claude Code Plugin (recommended)**
+**Option A: Claude Code plugin**
 
-From within Claude Code, first add the marketplace:
-```
-/plugin marketplace add forrestchang/andrej-karpathy-skills
-```
+From within Claude Code:
 
-Then install the plugin:
 ```
+/plugin marketplace add yelban/andrej-karpathy-skills.TW
 /plugin install andrej-karpathy-skills@karpathy-skills
 ```
 
-This installs the guidelines as a Claude Code plugin, making the skill available across all your projects.
+**Option B: `CLAUDE.md` per-project**
 
-**Option B: CLAUDE.md (per-project)**
-
-New project:
 ```bash
-curl -o CLAUDE.md https://raw.githubusercontent.com/forrestchang/andrej-karpathy-skills/main/CLAUDE.md
-```
-
-Existing project (append):
-```bash
-echo "" >> CLAUDE.md
-curl https://raw.githubusercontent.com/forrestchang/andrej-karpathy-skills/main/CLAUDE.md >> CLAUDE.md
+curl -o CLAUDE.md https://raw.githubusercontent.com/yelban/andrej-karpathy-skills.TW/main/CLAUDE.md
 ```
 
 ## Using with Cursor
 
-This repository includes a committed Cursor project rule ([`.cursor/rules/karpathy-guidelines.mdc`](.cursor/rules/karpathy-guidelines.mdc)) so the same guidelines apply when you open the project in Cursor. See **[CURSOR.md](CURSOR.md)** for setup, using the rule in other projects, and how this relates to Claude Code.
+The repository includes [`.cursor/rules/karpathy-guidelines.mdc`](.cursor/rules/karpathy-guidelines.mdc) with `alwaysApply: true`. See [`CURSOR.md`](./CURSOR.md) for setup details and how it differs from the Claude Code install.
 
-## Key Insight
+## Why this version is shorter
 
-From Andrej:
+Cross-reference between [the four original principles](./archived/v1/CLAUDE.md) and the current Claude Code system prompt (Opus 4.7):
 
-> "LLMs are exceptionally good at looping until they meet specific goals... Don't tell it what to do, give it success criteria and watch it go."
+| Original principle | Already in system prompt? |
+|---|---|
+| Simplicity First (no speculative features, no abstractions for single-use code) | Yes — "Don't add features, refactor, or introduce abstractions beyond what the task requires" |
+| Simplicity First (no error handling for impossible scenarios) | Yes — "Don't add error handling, fallbacks, or validation for scenarios that can't happen" |
+| Surgical Changes (don't refactor adjacent code) | Yes — "A bug fix doesn't need surrounding cleanup; a one-shot operation doesn't need a helper" |
+| Surgical Changes (match existing style, don't reformat) | Yes — "Match the scope of your actions to what was actually requested" |
+| Think Before Coding (state assumptions, surface tradeoffs) | Partial — system prompt covers exploratory replies; this skill adds "stop when confused" |
+| Goal-Driven Execution (loop until verified) | Partial — system prompt covers self-verification; this skill adds the user-side declarative framing |
 
-The "Goal-Driven Execution" principle captures this: transform imperative instructions into declarative goals with verification loops.
+The three reminders that remain are the ones the system prompt does not cover or under-emphasizes.
 
-## How to Know It's Working
+For the full line-by-line diff between v1 and v2 — every removed sub-rule mapped to its system-prompt replacement, plus the rationale for the rewrites — see [`archived/v1/NOTE.md`](./archived/v1/NOTE.md#detailed-v1--v2-diff-for-claudemd).
 
-These guidelines are working if you see:
+## Relationship to upstream
 
-- **Fewer unnecessary changes in diffs** — Only requested changes appear
-- **Fewer rewrites due to overcomplication** — Code is simple the first time
-- **Clarifying questions come before implementation** — Not after mistakes
-- **Clean, minimal PRs** — No drive-by refactoring or "improvements"
-
-## Customization
-
-These guidelines are designed to be merged with project-specific instructions. Add them to your existing `CLAUDE.md` or create a new one.
-
-For project-specific rules, add sections like:
-
-```markdown
-## Project-Specific Guidelines
-
-- Use TypeScript strict mode
-- All API endpoints must have tests
-- Follow the existing error handling patterns in `src/utils/errors.ts`
-```
-
-## Tradeoff Note
-
-These guidelines bias toward **caution over speed**. For trivial tasks (simple typo fixes, obvious one-liners), use judgment — not every change needs the full rigor.
-
-The goal is reducing costly mistakes on non-trivial work, not slowing down simple tasks.
+This repository is a Traditional Chinese (Taiwan) localization fork of [`forrestchang/andrej-karpathy-skills`](https://github.com/forrestchang/andrej-karpathy-skills), updated for the Claude Code Opus 4.7 era. Plugin / marketplace names intentionally match upstream; the README is bilingual (English + 繁體中文).
 
 ## License
 
