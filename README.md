@@ -46,6 +46,16 @@ Together with the goal, hand it the verification tool: a test command, a benchma
 - **Declarative**: features with observable outcomes, bug fixes, performance work, refactors with test coverage.
 - **Imperative**: exploratory edits, UI tweaks, prose, anything where "done" is subjective.
 
+### Explicit reframing: `/dec` (bundled with the plugin)
+
+`/dec <request>` asks the assistant to convert the request into success criteria + verification command + non-goals **without implementing anything**. You confirm, then it executes. Use when you want the declarative discipline applied to a single prompt without changing how you write the rest.
+
+```
+/dec fix the login flicker on first load
+```
+
+Returns success criteria (e.g. "Playwright screenshot diff < 2px across 10 runs"), verification command, and explicit non-goals. If the task is too subjective or too small, it replies "not applicable — just do it" instead of forcing a conversion.
+
 ## Install
 
 **Option A: Claude Code plugin**
