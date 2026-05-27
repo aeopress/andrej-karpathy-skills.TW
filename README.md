@@ -120,7 +120,7 @@ The three reminders and the `/dec` command are independent — pick any combinat
 | **A. Plugin** | as skill (triggered when relevant) | `/andrej-karpathy-skills:dec` (namespaced) | auto-updates via marketplace |
 | **B. `CLAUDE.md`** | always-on in system prompt | — | per-project file, manual `curl` |
 | **C. Manual command** | — | `/dec` (short) | global or per-project file, manual `curl` |
-| **D. `git clone` + `ln -s`** | symlink whole file *or* `sed`-append rules | `/dec` (short, symlinked) | auto-updates via `git pull` |
+| **D. `git clone`** | `cp` whole file *or* `sed`-append rules | `/dec` (short, symlinked) | `git pull` updates `/dec`; `CLAUDE.md` is your editable copy |
 
 **Option A: Claude Code plugin** — skill + namespaced command, both auto-update.
 
@@ -147,7 +147,7 @@ mkdir -p .claude/commands
 curl -o .claude/commands/dec.md https://raw.githubusercontent.com/yelban/andrej-karpathy-skills.TW/main/commands/dec.md
 ```
 
-**Option D: `git clone` + symlink** — single managed source of truth, auto-updates via `git pull`, no marketplace, no namespace.
+**Option D: `git clone` + symlink** — `/dec` auto-updates via `git pull`; `CLAUDE.md` is copied as a starting point you can freely edit per project.
 
 ```bash
 # 1. Clone once (any location works; example uses ~/.claude/external/)
@@ -155,27 +155,33 @@ mkdir -p ~/.claude/external
 git clone https://github.com/yelban/andrej-karpathy-skills.TW \
   ~/.claude/external/andrej-karpathy-skills.TW
 
-# 2. Symlink the short /dec command globally
+# 2. Symlink the short /dec command globally (the command itself is stateless,
+#    so a symlink that follows upstream is what you want)
 mkdir -p ~/.claude/commands
 ln -sf ~/.claude/external/andrej-karpathy-skills.TW/commands/dec.md \
   ~/.claude/commands/dec.md
 
-# 3. Per-project CLAUDE.md — choose ONE:
-# (a) Project doesn't have a CLAUDE.md yet — symlink the whole file:
-ln -sf ~/.claude/external/andrej-karpathy-skills.TW/CLAUDE.md ./CLAUDE.md
+# 3. Per-project CLAUDE.md — choose ONE.
+#    NOT a symlink: a project's CLAUDE.md belongs to the project,
+#    so you copy or append, then keep editing it yourself.
+
+# (a) Project doesn't have a CLAUDE.md yet — copy the file as a starting point:
+cp ~/.claude/external/andrej-karpathy-skills.TW/CLAUDE.md ./CLAUDE.md
+
 # (b) Project already has its own CLAUDE.md — append just the three rules:
 sed -n '/^## Stop when confused/,$p' \
   ~/.claude/external/andrej-karpathy-skills.TW/CLAUDE.md >> ./CLAUDE.md
 
-# To update everything later:
+# To update /dec and pull future README / EXPERIMENT.md updates:
 cd ~/.claude/external/andrej-karpathy-skills.TW && git pull
+# CLAUDE.md does NOT auto-update — re-run (a) or (b) only if you want to.
 ```
 
 > The `sed` extraction starts at the first `## Stop when confused` heading, skipping the title and intro paragraph. The trailing `/dec` invocation note is included — useful as a footer in your project's CLAUDE.md.
 
 ### Recommended combinations
 
-- **D alone** — clone once, symlink, `git pull` to update. Single managed source of truth, no marketplace dependency, short `/dec`. Recommended for power users.
+- **D alone** — clone once, symlink `/dec`, copy CLAUDE.md as a starting point. `git pull` updates `/dec` (and future README / EXPERIMENT.md); CLAUDE.md stays editable per project. No marketplace, short `/dec`. Recommended for power users.
 - **B + C** (no plugin, no clone) — `CLAUDE.md` always-on + short `/dec`, both via `curl`. Smallest footprint, but updates are manual (re-run the `curl` commands).
 - **A only** — single install command, auto-updates, but `/dec` is namespaced and the rules only apply when the skill triggers (not always-on).
 - **A + B** — plugin for `/dec` (namespaced) + `CLAUDE.md` for always-on rules. Some redundancy (skill content overlaps `CLAUDE.md`) but harmless.
