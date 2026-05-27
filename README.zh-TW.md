@@ -208,9 +208,10 @@ cd ~/.claude/external/andrej-karpathy-skills.TW && git pull
 
 ### 推薦組合
 
-- **只裝 D**（推薦給 power user）— clone 一次、symlink `/dec`、`cp` CLAUDE.md 當起點。`git pull` 更新 `/dec`（與未來的 README / EXPERIMENT.md）；CLAUDE.md 保留專案內可編輯。不依賴 marketplace、保留短 `/dec`。
+- **A + D** ★ **首選** — 外掛 marketplace 自動更新 `/andrej-karpathy-skills:dec`；另外 `git clone` + `ln -sf` 給你短 `/dec`、透過 `git pull` 同步。兩種喊法都能用、檔案內容相同。這是「set and forget」加「短觸發詞」的最佳組合——Claude Code 沒有原生 slash command alias 機制、雙 channel 安裝是 workaround。Step 3(c)（sed 追加 CLAUDE.md 到 `~/.claude/CLAUDE.md`）可選順帶做。
+- **只裝 D** — clone 一次、symlink `/dec`、`cp` CLAUDE.md 當起點。`git pull` 更新 `/dec`（與未來的 README / EXPERIMENT.md）；CLAUDE.md 保留專案內可編輯。不依賴 marketplace、保留短 `/dec`。完全不想走 plugin 路徑的話這個也夠。
 - **B + C**（不裝外掛、不 clone）— `CLAUDE.md` 永遠在 + 短 `/dec`，兩個都 `curl`。最輕量、但要更新時要手動重跑 `curl`。
-- **只裝 A** — 一條指令搞定、自動更新。v3.0.0 起 plugin 只含 `/dec`（無 skill）、所以這個組合只給你斜線指令、沒有永遠在的規則。
+- **只裝 A** — 一條指令搞定、自動更新。v3.0.0 起 plugin 只含 `/dec`（無 skill）、所以這個組合只給你斜線指令、沒有永遠在的規則。你每次都要打完整的 `/andrej-karpathy-skills:dec`。
 - **A + B** — 外掛拿 `/dec`（namespaced）+ `CLAUDE.md` 拿永遠在的規則。v3.0.0 起職責清楚：plugin 管 `/dec`、`CLAUDE.md` 管規則、不再重疊。
 
 ## 搭配 Cursor 使用

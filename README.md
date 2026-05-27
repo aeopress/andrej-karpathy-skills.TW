@@ -211,9 +211,10 @@ cd ~/.claude/external/andrej-karpathy-skills.TW && git pull
 
 ### Recommended combinations
 
-- **D alone** — clone once, symlink `/dec`, copy CLAUDE.md as a starting point. `git pull` updates `/dec` (and future README / EXPERIMENT.md); CLAUDE.md stays editable per project. No marketplace, short `/dec`. Recommended for power users.
+- **A + D** ★ **top pick** — plugin auto-updates `/andrej-karpathy-skills:dec` via marketplace; a separate `git clone` + `ln -sf` gives you the short `/dec` that updates via `git pull`. Both invocations work, the file contents are identical. Best blend of "set and forget" plus "short trigger word", since Claude Code has no native slash-command alias mechanism — having both channels installed is the workaround. Step 3(c) (sed-append CLAUDE.md into `~/.claude/CLAUDE.md`) is optional alongside.
+- **D alone** — clone once, symlink `/dec`, copy CLAUDE.md as a starting point. `git pull` updates `/dec` (and future README / EXPERIMENT.md); CLAUDE.md stays editable per project. No marketplace, short `/dec`. Solid choice if you don't want the plugin path at all.
 - **B + C** (no plugin, no clone) — `CLAUDE.md` always-on + short `/dec`, both via `curl`. Smallest footprint, but updates are manual (re-run the `curl` commands).
-- **A only** — single install command, auto-updates. Since v3.0.0 the plugin is `/dec`-only (no skill), so this combination gives you the slash command without any always-on rules.
+- **A only** — single install command, auto-updates. Since v3.0.0 the plugin is `/dec`-only (no skill), so this combination gives you the slash command without any always-on rules. You'll have to type the full `/andrej-karpathy-skills:dec` every time.
 - **A + B** — plugin for `/dec` (namespaced) + `CLAUDE.md` for always-on rules. Clean separation since v3.0.0: plugin owns `/dec`, `CLAUDE.md` owns rules, no overlap.
 
 ## Using with Cursor
