@@ -119,12 +119,12 @@ The three reminders and the `/dec` command are independent — pick any combinat
 
 | | Three reminders | `/dec` command | Mechanism |
 |---|---|---|---|
-| **A. Plugin** | as skill (triggered when relevant) | `/andrej-karpathy-skills:dec` (namespaced) | auto-updates via marketplace |
+| **A. Plugin** | — (skill removed in v3.0.0; use B / C / D for `CLAUDE.md`) | `/andrej-karpathy-skills:dec` (namespaced) | auto-updates via marketplace |
 | **B. `CLAUDE.md`** | always-on in system prompt | — | per-project file, manual `curl` |
 | **C. Manual command** | — | `/dec` (short) | global or per-project file, manual `curl` |
 | **D. `git clone`** | `cp` whole file *or* `sed`-append rules | `/dec` (short, symlinked) | `git pull` updates `/dec`; `CLAUDE.md` is your editable copy |
 
-**Option A: Claude Code plugin** — skill + namespaced command, both auto-update.
+**Option A: Claude Code plugin** — installs only the `/dec` command (namespaced), auto-updates via marketplace. The skill that wrapped the three reminders was removed in v3.0.0 after the empirical A/B test showed it had no measurable effect (see [`EXPERIMENT.md`](./EXPERIMENT.md)). For the always-on rules, use Option B, C, or D below.
 
 ```
 /plugin marketplace add yelban/andrej-karpathy-skills.TW
@@ -185,8 +185,8 @@ cd ~/.claude/external/andrej-karpathy-skills.TW && git pull
 
 - **D alone** — clone once, symlink `/dec`, copy CLAUDE.md as a starting point. `git pull` updates `/dec` (and future README / EXPERIMENT.md); CLAUDE.md stays editable per project. No marketplace, short `/dec`. Recommended for power users.
 - **B + C** (no plugin, no clone) — `CLAUDE.md` always-on + short `/dec`, both via `curl`. Smallest footprint, but updates are manual (re-run the `curl` commands).
-- **A only** — single install command, auto-updates, but `/dec` is namespaced and the rules only apply when the skill triggers (not always-on).
-- **A + B** — plugin for `/dec` (namespaced) + `CLAUDE.md` for always-on rules. Some redundancy (skill content overlaps `CLAUDE.md`) but harmless.
+- **A only** — single install command, auto-updates. Since v3.0.0 the plugin is `/dec`-only (no skill), so this combination gives you the slash command without any always-on rules.
+- **A + B** — plugin for `/dec` (namespaced) + `CLAUDE.md` for always-on rules. Clean separation since v3.0.0: plugin owns `/dec`, `CLAUDE.md` owns rules, no overlap.
 
 ## Using with Cursor
 

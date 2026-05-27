@@ -5,15 +5,15 @@
     "name": "yelban"
   },
   "metadata": {
-    "description": "Three reminders for LLM coding pitfalls in Claude Code Opus 4.7+ — Traditional Chinese (Taiwan) localization",
-    "version": "2.2.0"
+    "description": "The /dec slash command (declarative reframing, pairs with /goal) — Traditional Chinese (Taiwan) localization",
+    "version": "3.0.0"
   },
   "plugins": [
     {
       "name": "andrej-karpathy-skills",
       "source": "./",
-      "description": "Three reminders that complement Claude Code's built-in guidance: stop when confused, every changed line traces to the request, loop on declarative goals. Includes /dec slash command for explicit declarative reframing. Traditional Chinese (Taiwan) localization fork of forrestchang/andrej-karpathy-skills.",
-      "version": "2.2.0",
+      "description": "The /dec slash command — reframes an imperative request as a contract (success criteria + verification command + non-goals + a ready-to-use /goal condition). Pairs with Claude Code's built-in /goal (v2.1.139+) to form the user-side leverage pipeline Karpathy described. Includes a CLAUDE.md you can adopt separately via README install options. Traditional Chinese (Taiwan) localization fork of forrestchang/andrej-karpathy-skills.",
+      "version": "3.0.0",
       "author": {
         "name": "yelban"
       },

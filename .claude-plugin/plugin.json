@@ -1,11 +1,10 @@
 {
   "name": "andrej-karpathy-skills",
-  "description": "Three reminders for LLM coding pitfalls that Claude Code's built-in system prompt does not already cover (stop when confused, every changed line traces to the request, loop on declarative goals). Traditional Chinese (Taiwan) localization fork of forrestchang/andrej-karpathy-skills.",
-  "version": "2.2.0",
+  "description": "The /dec slash command — declarative reframing of a request as success criteria + verification + non-goals, pairing with Claude Code's built-in /goal (v2.1.139+). Traditional Chinese (Taiwan) localization fork of forrestchang/andrej-karpathy-skills.",
+  "version": "3.0.0",
   "author": {
     "name": "yelban"
   },
   "license": "MIT",
-  "keywords": ["guidelines", "best-practices", "coding", "karpathy", "traditional-chinese"],
-  "skills": ["./skills/karpathy-guidelines"]
+  "keywords": ["guidelines", "best-practices", "coding", "karpathy", "traditional-chinese", "declarative", "goal"]
 }
