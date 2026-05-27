@@ -52,11 +52,13 @@ Two slash commands map onto Karpathy's two verbs — "give it success criteria" 
 
 #### `/dec` alone
 
+`dec` is short for **declarative**. The command reframes a command-style request into a contract; you confirm before anything is implemented.
+
 ```
 /dec fix the login flicker on first load
 ```
 
-Returns success criteria (e.g. "Playwright screenshot diff < 2px across 10 runs"), a verification command, and explicit non-goals. If the task is too subjective or too small, it replies "not applicable — just do it" instead of forcing a conversion. Good for one-shot prompts where you want the declarative discipline without committing to autonomous looping.
+Returns success criteria (e.g. "Playwright screenshot diff < 2px across 10 runs"), a verification command, and explicit non-goals — plus a ready-to-use `/goal` condition string that compiles the success criteria and non-goals into a single AND-joined expression you can paste directly. If the task is too subjective or too small, it replies "not applicable — just do it" instead of forcing a conversion. Good for one-shot prompts where you want the declarative discipline without committing to autonomous looping (or when you're on Cursor / an older Claude Code without `/goal`).
 
 #### `/dec` as the boundary-setter for `/goal`
 
@@ -87,9 +89,9 @@ Returns success criteria (e.g. "Playwright screenshot diff < 2px across 10 runs"
 #### The full pipeline
 
 ```
-1. /dec <vague request>            ← rewrite as contract (success + verify + non-goals)
+1. /dec <vague request>            ← contract + a pre-compiled /goal condition
 2. you review the contract         ← human confirms direction
-3. /goal "<success + non-goals>"   ← Haiku takes over as judge
+3. paste the /goal line from #1    ← Haiku takes over as judge
 4. Claude loops to convergence     ← Karpathy's "watch it go"
 ```
 

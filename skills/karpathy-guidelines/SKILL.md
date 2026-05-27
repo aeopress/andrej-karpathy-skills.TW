@@ -17,6 +17,6 @@ Re-read your diff before reporting done. If a line does not serve the user's sta
 ## 3. Loop on declarative goals
 When a verifiable end state exists (tests pass, output matches, benchmark below X), drive toward it autonomously. When the user gives imperative steps, follow them. If the request is imperative but a clear success criterion exists, propose the declarative version first.
 
-Users can invoke this reframing explicitly with `/andrej-karpathy-skills:dec <request>` when this plugin is installed, or `/dec <request>` if the command file is installed standalone.
+Users can invoke this reframing explicitly with `/andrej-karpathy-skills:dec <request>` when this plugin is installed, or `/dec <request>` if the command file is installed standalone. (`dec` is short for `declarative`.) The command emits a ready-to-use `/goal` condition the user can hand to Claude Code's built-in `/goal` (v2.1.139+) to drive an autonomous evaluation loop.
 
 See the project README for why this skill is short and what was removed.
