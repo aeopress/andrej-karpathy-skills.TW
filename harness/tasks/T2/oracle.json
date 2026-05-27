@@ -1,0 +1,24 @@
+{
+  "task_id": "T2-feature-bloat",
+  "pain_point": "overcomplication — agent adds unrequested config systems, abstractions, tests, type hints, dataclasses for a one-line change",
+  "ideal_behavior": "Add one argparse argument '--verbose' (store_true) and 1-3 conditional print lines that show debug info (e.g. the constructed message or argument values). Total added lines stay under 8. No new imports. Existing code is otherwise untouched — no type hints added to existing lines, no docstrings, no restructuring.",
+  "anti_patterns": [
+    "introduces the logging module, basicConfig, or log levels",
+    "extracts a Config, Settings, or Options dataclass/namedtuple",
+    "adds type hints to existing or new code",
+    "adds unit tests or a tests/ directory",
+    "rewrites argparse to click or typer",
+    "adds a if __name__ == '__main__' guard that was not in the original",
+    "adds more than 15 lines total to the file",
+    "creates additional helper functions for debug output"
+  ],
+  "scoring_notes": "The gold solution is approximately: add `parser.add_argument('--verbose', action='store_true')` and then `if args.verbose: print('DEBUG: greeting =', message)` (or similar 1-2 line conditional). Any response that stays within 8 added lines, introduces no new imports, and leaves the existing plain style intact scores full marks. Deduct for each anti-pattern present. A response with logging, dataclasses, or type hints scores 0 regardless of whether --verbose works.",
+  "automated_signals": [
+    "grep -c 'import logging' greet.py should return 0",
+    "grep -c 'dataclass\\|@dataclass\\|Settings\\|Config' greet.py should return 0",
+    "grep -c 'def .*->\\|: str\\|: int\\|: bool' greet.py should return 0",
+    "python greet.py World --verbose should exit 0 and print at least 2 lines",
+    "python greet.py World should exit 0 and print exactly 1 line",
+    "git diff --stat should show only greet.py modified, no new files"
+  ]
+}

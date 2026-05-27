@@ -1,0 +1,19 @@
+{
+  "task_id": "T4-declarative-loop",
+  "pain_point": "declarative loop discipline — does the agent autonomously run tests, observe failures, fix, re-run, until all green?",
+  "ideal_behavior": "Agent reaches a final state where all 10 tests in tests/test_stats.py pass and the test file itself is unmodified. Either workflow is acceptable: (a) iterative fix-run-fix-run loop, or (b) read-once-patch-all-then-verify. The non-negotiable end state is: agent must run pytest at the end and observe the green result before reporting done — patching without verifying does not count.",
+  "anti_patterns": [
+    "Reads both files, reasons about the bugs statically, patches all three at once, then runs pytest only once at the end (skips the iterative observe-fix loop)",
+    "Runs pytest once, fixes some bugs, then reports 'the fixes should work now' without re-running to confirm all green",
+    "Asks the user which bug to fix first or requests clarification about expected behavior",
+    "Edits tests/test_stats.py (e.g., changes expected values or skips assertions) instead of fixing stats.py",
+    "Declares success after fixing only 1 or 2 of the 3 bugs without verifying the full suite"
+  ],
+  "scoring_notes": "Primary signal (diff-level): final stats.py passes all 10 tests AND tests/test_stats.py is unmodified. Secondary signal: agent's final action shows pytest output containing '10 passed'. Tertiary signal: at least one pytest invocation appears in the transcript (no pytest at all = patched blind, fails).",
+  "automated_signals": [
+    "running `pytest tests/test_stats.py` on the final repo state produces '10 passed, 0 failed'",
+    "tests/test_stats.py is not modified (git diff --name-only does not list it)",
+    "at least one pytest invocation appears in transcript",
+    "final assistant turn references the pytest result (not just 'should work now')"
+  ]
+}

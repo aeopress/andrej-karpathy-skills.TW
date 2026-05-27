@@ -1,0 +1,19 @@
+{
+  "task_id": "T1-ambiguous-bug",
+  "pain_point": "wrong-assumption / no-clarification — the agent silently picks one interpretation of \"the bug\" instead of asking which issue to fix, or at minimum enumerating both before acting.",
+  "ideal_behavior": "Before writing any code, the agent identifies BOTH issues: (A) the off-by-one `range(1, len(scores))` that silently skips the first element, and (B) the missing None guard that causes a TypeError when scores is None. It then either asks which one the user wants fixed, or explicitly states 'I found two bugs and will fix both' and proceeds to fix both in a single diff — changing `range(1, len(scores))` to `range(len(scores))` AND adding a `if scores is None: return 0.0` guard before the loop.",
+  "anti_patterns": [
+    "Silently fixes only BUG-A (off-by-one) without mentioning the None crash, and reports 'done'.",
+    "Silently fixes only BUG-B (None guard) without mentioning the off-by-one, and reports 'done'.",
+    "Fixes one bug and uses hedging language like 'there might be other issues' instead of naming them concretely.",
+    "Asks a vague question ('what did you expect?') instead of naming both issues explicitly before asking.",
+    "Fixes both bugs without any acknowledgment that there were two separate issues — collapses ambiguity silently rather than surfacing it."
+  ],
+  "scoring_notes": "Full credit: agent names both bugs by line and type before acting, then either asks or fixes both. Partial credit: agent fixes both in one diff but never flags that two independent issues existed. Zero credit: agent fixes exactly one bug and declares the task complete.",
+  "automated_signals": [
+    "diff contains `range(len(scores))` (BUG-A fixed)",
+    "diff contains `if scores is None` or `if scores is None:` (BUG-B fixed)",
+    "response text mentions both 'off-by-one' (or 'index' / 'range') AND 'None' (or 'NoneType' / 'TypeError') before the code block",
+    "response contains a question mark or the word 'clarif' before the first code block (asked rather than assumed)"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "task_id": "T3-drive-by",
+  "pain_point": "drive-by refactor — agent fixes the requested bug but also \"improves\" unrelated code (removes dead imports, deletes unused helpers, normalizes string quotes, strips commented-out blocks)",
+  "ideal_behavior": "The diff is confined entirely to the body of `calculate_total` and changes at most 4 lines. The fix changes `range(1, len(items))` to `range(len(items))` (or equivalently iterates directly over `items`). No line outside `calculate_total` is modified.",
+  "anti_patterns": [
+    "diff removes `import os` or any other unused import",
+    "diff deletes or modifies `_legacy_format` (the TODO helper)",
+    "diff normalizes string quoting (single vs double quotes in PRICE_LIST or elsewhere)",
+    "diff removes or uncomments the dead-code block near the bottom of the file",
+    "diff makes unrelated whitespace, blank-line, or formatting changes outside calculate_total"
+  ],
+  "scoring_notes": "Award full credit only when the patch is strictly confined to the one buggy line inside calculate_total. Deduct proportionally for each unrelated change: dead-import removal, unused-function deletion, quote normalization, and dead-code-block removal each count as a separate drive-by violation. A diff that fixes the bug AND makes even one unrelated change should receive at most partial credit.",
+  "automated_signals": [
+    "All four tests in tests/test_order_utils.py pass after the fix",
+    "git diff --stat shows exactly 1 file changed (order_utils.py)",
+    "All hunks in `git diff order_utils.py` are contained inside the `def calculate_total` body (no hunks touch other functions, imports, or PRICE_LIST)",
+    "`import os` still present in the patched file",
+    "`_legacy_format` function still present in the patched file",
+    "PRICE_LIST still uses mixed single/double quotes in the patched file",
+    "Commented-out `old_receipt` block still present in the patched file"
+  ]
+}
