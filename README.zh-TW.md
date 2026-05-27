@@ -146,7 +146,7 @@ OpenAI 的 Codex CLI 比 Claude Code 早 11 天於 [v0.128.0（2026-04-30）](ht
 |---|---|---|---|
 | **A. 外掛** | — (v3.0.0 起 skill 已移除；CLAUDE.md 改用 B / C / D) | `/andrej-karpathy-skills:dec`（含 namespace） | 透過 marketplace 自動更新 |
 | **B. `CLAUDE.md`** | 永遠在 system prompt | — | 依專案放一份、手動 `curl` |
-| **C. 手動指令檔** | — | `/dec`（短） | 全域或依專案、手動 `curl` |
+| **C. 手動指令檔** | — | `/dec`（短、全域） | 手動 `curl` |
 | **D. `git clone`** | 整檔 `cp` *或* `sed` 追加規則 | `/dec`（短、symlink 過去） | `git pull` 更新 `/dec`；`CLAUDE.md` 是你的可編輯副本 |
 
 **選項 A：Claude Code 外掛** — 只安裝 `/dec` 指令（含 namespace）、透過 marketplace 自動更新。v3.0.0 起移除了那個包著三條規則的 skill——因為實證告訴我們它在 Opus 4.7 上沒有可測量效應（見 [`EXPERIMENT.md`](./EXPERIMENT.md)）。要永遠在的規則，請用下面的 B / C / D。
@@ -162,16 +162,12 @@ OpenAI 的 Codex CLI 比 Claude Code 早 11 天於 [v0.128.0（2026-04-30）](ht
 curl -o CLAUDE.md https://raw.githubusercontent.com/yelban/andrej-karpathy-skills.TW/main/CLAUDE.md
 ```
 
-**選項 C：手動安裝 `/dec` 指令** — 不經過外掛 namespace，直接打短的 `/dec`。
+**選項 C：手動安裝 `/dec` 指令** — 不經過外掛 namespace、直接打短的 `/dec`。`/dec` 是不綁 vendor 的 prompt template、沒有專案特定狀態、所以**只裝全域**才合理。
 
 ```bash
-# 全域（所有專案可用）
 mkdir -p ~/.claude/commands
-curl -o ~/.claude/commands/dec.md https://raw.githubusercontent.com/yelban/andrej-karpathy-skills.TW/main/commands/dec.md
-
-# 或依專案
-mkdir -p .claude/commands
-curl -o .claude/commands/dec.md https://raw.githubusercontent.com/yelban/andrej-karpathy-skills.TW/main/commands/dec.md
+curl -o ~/.claude/commands/dec.md \
+  https://raw.githubusercontent.com/yelban/andrej-karpathy-skills.TW/main/commands/dec.md
 ```
 
 **選項 D：`git clone` + symlink** — `/dec` 透過 `git pull` 自動更新；`CLAUDE.md` 整檔 `cp` 作為起點、之後依專案自由修改。
@@ -187,19 +183,25 @@ mkdir -p ~/.claude/commands
 ln -sf ~/.claude/external/andrej-karpathy-skills.TW/commands/dec.md \
   ~/.claude/commands/dec.md
 
-# 3. 依專案的 CLAUDE.md——擇一。
-#    不用 symlink：CLAUDE.md 是專案自己的東西，所以是「cp 或追加之後自己改」。
+# 3. CLAUDE.md 放哪——擇一。
+#    不用 symlink：CLAUDE.md 是放置位置的所有人改的東西、所以是「cp 或追加之後自己改」。
 
-# (a) 專案還沒 CLAUDE.md，整檔 cp 當起點：
+# (a) 專案還沒 CLAUDE.md、整檔 cp 當專案起點：
 cp ~/.claude/external/andrej-karpathy-skills.TW/CLAUDE.md ./CLAUDE.md
 
-# (b) 專案已有自己的 CLAUDE.md，只追加三條規則：
+# (b) 專案已有自己的 CLAUDE.md、只追加三條規則：
 sed -n '/^## Stop when confused/,$p' \
   ~/.claude/external/andrej-karpathy-skills.TW/CLAUDE.md >> ./CLAUDE.md
 
+# (c) 追加到你的「全域」 ~/.claude/CLAUDE.md（規則跨所有專案套用）。
+#     建議先備份：你既有的全域規則可能跟這三條互動。
+cp ~/.claude/CLAUDE.md ~/.claude/CLAUDE.md.bak  # 既有才需要備份
+sed -n '/^## Stop when confused/,$p' \
+  ~/.claude/external/andrej-karpathy-skills.TW/CLAUDE.md >> ~/.claude/CLAUDE.md
+
 # 更新 /dec、拉新版 README / EXPERIMENT.md：
 cd ~/.claude/external/andrej-karpathy-skills.TW && git pull
-# CLAUDE.md 不會自動更新——想拿新規則時、自己再重跑 (a) 或 (b)。
+# CLAUDE.md 不會自動更新——想拿新規則時、自己再重跑 (a)/(b)/(c)。
 ```
 
 > `sed` 從第一個 `## Stop when confused` 標題開始抓、跳過 README title 與前言段。末尾 `/dec` 呼叫說明會被一起追加——當作專案 CLAUDE.md 的 footer 也合用。
