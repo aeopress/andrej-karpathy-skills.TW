@@ -10,17 +10,9 @@ Claude Code's system prompt (Opus 4.7 / Sonnet 4.6 era) now includes most of the
 
 The earlier full-rules version lives in [`archived/v1/`](./archived/v1/) for reference.
 
-## What the assistant gets
-
-Three reminders, copied verbatim from [`CLAUDE.md`](./CLAUDE.md):
-
-1. **Stop when confused** — if a request is ambiguous, name what is unclear and ask; do not pick an interpretation silently.
-2. **Every changed line should trace to the request** — re-read your diff before reporting done; if a line does not serve the user's stated goal, remove it.
-3. **Loop on declarative goals** — when a verifiable end state exists, drive toward it autonomously.
-
-That is the entire instruction file. The other pitfalls Karpathy named (overcomplication, drive-by refactors, speculative features, dead-code creep, removing comments the model "doesn't like") are already addressed by Claude Code's default system prompt; duplicating them only dilutes signal.
-
 ## What the user does — the actual leverage
+
+**This is the most important section in this README.** Our [empirical A/B test](./EXPERIMENT.md) (May 2026) found that the three reminders below had no measurable effect on Opus 4.7's behavior (Fisher exact p=1.00 at N=10 per cell on the most discriminating task). The user-side framing covered here is independent of the model — it shifts what you get back regardless of which LLM is on the other side.
 
 Karpathy's strongest observation is **a user-side discipline**, not something the assistant self-enforces:
 
@@ -57,6 +49,16 @@ The command converts the request into success criteria + verification command + 
 Returns success criteria (e.g. "Playwright screenshot diff < 2px across 10 runs"), verification command, and explicit non-goals. If the task is too subjective or too small, it replies "not applicable — just do it" instead of forcing a conversion.
 
 > **Note on invocation:** when installed via the plugin (Option A below), Claude Code namespaces the command to `/andrej-karpathy-skills:dec`. For the short `/dec` form, install the command file manually (Option C).
+
+## What the assistant gets
+
+Three reminders, copied verbatim from [`CLAUDE.md`](./CLAUDE.md). Kept because they're cheap and may help on different models or longer contexts, but the empirical marginal effect on Opus 4.7 is small (see [`EXPERIMENT.md`](./EXPERIMENT.md)).
+
+1. **Stop when confused** — if a request is ambiguous, name what is unclear and ask; do not pick an interpretation silently.
+2. **Every changed line should trace to the request** — re-read your diff before reporting done; if a line does not serve the user's stated goal, remove it.
+3. **Loop on declarative goals** — when a verifiable end state exists, drive toward it autonomously.
+
+That is the entire instruction file. The other pitfalls Karpathy named (overcomplication, drive-by refactors, speculative features, dead-code creep, removing comments the model "doesn't like") are already addressed by Claude Code's default system prompt; duplicating them only dilutes signal.
 
 ## Install
 
