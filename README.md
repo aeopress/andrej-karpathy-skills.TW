@@ -2,6 +2,14 @@
 
 A small `CLAUDE.md` that complements Claude Code's built-in guidance, derived from [Andrej Karpathy's observations](https://x.com/karpathy/status/2015883857489522876) on LLM coding pitfalls.
 
+**Three rules in `CLAUDE.md`, one slash command (`/dec`), and an A/B test that says the rules barely move Opus 4.7 — so the real leverage is `/dec` + Claude Code's built-in `/goal`, not the rules file.**
+
+Why you'd install this:
+
+- You want a `CLAUDE.md` that **does not duplicate** Opus 4.7's system prompt (Karpathy's *over-complication / surgical changes / no speculative features* points already live there — repeating them dilutes signal)
+- You want `/dec` to rewrite vague requests into **machine-checkable contracts** that `/goal` can actually verify
+- You want the **empirical receipts** ([N=40 A/B test](./EXPERIMENT.md), [verified line-by-line diff against upstream v1](#which-v1-rules-ended-up-where)) before adding more rules to your prompt
+
 English | [繁體中文（台灣）](./README.zh-TW.md)
 
 ## Status (May 2026)
@@ -138,6 +146,38 @@ Three reminders, copied verbatim from [`CLAUDE.md`](./CLAUDE.md). Kept because t
 
 That is the entire instruction file. The other pitfalls Karpathy named (overcomplication, drive-by refactors, speculative features, dead-code creep, removing comments the model "doesn't like") are already addressed by Claude Code's default system prompt; duplicating them only dilutes signal.
 
+## Which v1 rules ended up where
+
+[Upstream v1](./archived/v1/CLAUDE.md) had 4 principles × 4–6 sub-rules each (66 lines total). v2 is 19 lines. Below is the verbatim mapping for every rule that we could confirm against the Opus 4.7 system prompt — that is, every cell in the third column is a direct quote we observed in a live Claude Code session, not a paraphrase.[^sysprompt]
+
+| v1 rule | v2 disposition | Verbatim line in Opus 4.7 system prompt |
+|---|---|---|
+| **Simplicity First** — No features beyond what was asked | Removed | "Don't add features, refactor, or introduce abstractions beyond what the task requires" |
+| **Simplicity First** — No abstractions for single-use code | Removed | "Three similar lines is better than a premature abstraction" |
+| **Simplicity First** — No flexibility/configurability that wasn't requested | Removed | "Don't design for hypothetical future requirements" |
+| **Simplicity First** — No error handling for impossible scenarios | Removed | "Don't add error handling, fallbacks, or validation for scenarios that can't happen. Trust internal code and framework guarantees. Only validate at system boundaries" |
+| **Surgical Changes** — Don't 'improve' adjacent code | Removed | "A bug fix doesn't need surrounding cleanup; a one-shot operation doesn't need a helper" |
+| **Surgical Changes** — Don't remove pre-existing dead code unless asked | Removed | "Avoid backwards-compatibility hacks like renaming unused _vars... If you are certain that something is unused, you can delete it completely" |
+| **Surgical Changes** — Every changed line should trace to user's request | **Kept** (renamed) | *(no equivalent — this is v2's genuine addition)* |
+| **Think Before Coding** — Whole principle (4 sub-rules) | **3 removed, 1 kept as Stop when confused** | *(no verbatim coverage — see note below)* |
+| **Goal-Driven Execution** — TDD examples + multi-step plan format | **Rewritten** as Loop on declarative goals | *(no equivalent — this is Karpathy's actual point, kept but reframed)* |
+
+About **Think Before Coding** — we removed three of its four sub-rules ("state assumptions explicitly", "present multiple interpretations", "push back when warranted") but they are *not* verbatim covered by the system prompt. The closest passage is `"For exploratory questions, respond in 2–3 sentences with a recommendation and the main tradeoff. Present it as something the user can redirect"`, which addresses the same intent for exploratory questions but is **not** a full substitute. We dropped them anyway because the [A/B test](./EXPERIMENT.md) found that adding the full four-rule version did not reliably trigger "stop and ask" behavior (0/30 runs asked clarification on T1). The single rule we kept — "if something is unclear, stop and ask" — is the one with the cleanest action (stop), not coverage-by-deletion. **This is a judgment call, not a verbatim-overlap claim.**
+
+### Three concrete benefits of the deletions
+
+1. **Signal de-dilution.** Restating system-prompt content in `CLAUDE.md` re-weights instructions the model already follows; the new rules you add have to compete for attention against duplicates. With v2, every line in `CLAUDE.md` says something the system prompt does **not**.
+2. **Fewer false triggers on non-code work.** v1's TDD-first examples ("write tests for invalid inputs, then make them pass") were hard-coded for testable contexts. UI tweaks, prose, and config edits have no test to write — and the v1 framing pushed the model to invent verification criteria where none belonged. v2's `## Loop on declarative goals` defers to the user instead of prescribing a format.
+3. **Empirical backing for "smaller is fine."** The [N=40 A/B test](./EXPERIMENT.md) found no statistically significant difference between v1 (65 lines), v2 (19 lines), and no `CLAUDE.md` at all on Opus 4.7. Deletion does not measurably hurt — and shorter files are cheaper to review when they conflict with project-specific rules.
+
+### But v2 did keep Karpathy's strongest point — and moved it to user-side tooling
+
+Of Karpathy's named pitfalls, the one v2 did *not* delete is the most important: **`Loop on declarative goals`**. The reason it survived is that the system prompt does not cover it — but more importantly, the leverage here is **user-side**, not assistant-side. That's why v2 also ships `/dec`: a slash command that rewrites imperative requests into declarative contracts, paired with Claude Code's built-in `/goal` evaluator. See [`/dec`: the boundary-setter that makes `/goal` actually converge](#dec-the-boundary-setter-that-makes-goal-actually-converge) above.
+
+This "policy / mechanism separation" — the LLM handles the *what* (high-level intent), tooling handles the *how* (deterministic execution) — has converged into a research consensus in 2025–2026 ([arxiv 2510.04607](https://arxiv.org/html/2510.04607v2), [PDL arxiv 2410.19135](https://arxiv.org/pdf/2410.19135)). `/dec` is the prompt-engineering surface for that pattern.
+
+[^sysprompt]: Quoted lines verified against the Opus 4.7 system prompt observed in Claude Code CLI sessions on 2026-05-28. The full prose system prompt as observed is archived at [`archived/observed-system-prompts/2026-05-28-opus-4.7-cli.md`](./archived/observed-system-prompts/2026-05-28-opus-4.7-cli.md) — the file documents how the built-in prompt is positionally separable from `CLAUDE.md` injection in the session structure, and includes a cross-reference mapping every quote in the table above to its exact section in the snapshot. Claude Code's system prompt is injected at runtime and not publicly documented by Anthropic; wording may change in future CLI / model updates.
+
 ## Install
 
 The three reminders and the `/dec` command are independent — pick any combination.
@@ -221,11 +261,9 @@ cd ~/.claude/external/andrej-karpathy-skills.TW && git pull
 
 The repository includes [`.cursor/rules/karpathy-guidelines.mdc`](.cursor/rules/karpathy-guidelines.mdc) with `alwaysApply: true`. See [`CURSOR.md`](./CURSOR.md) for setup details and how it differs from the Claude Code install.
 
-## Why this version is shorter — and what an A/B test actually showed
+## What an A/B test actually showed
 
-The original rationale (based on reading Opus 4.7's system prompt) was: most of v1's rules now live in the built-in system prompt, so duplicating them dilutes signal. Full v1 → v2 diff in [`archived/v1/NOTE.md`](./archived/v1/NOTE.md#detailed-v1--v2-diff-for-claudemd).
-
-That argument was a judgment, not a measurement. So in May 2026 we ran a small empirical A/B:
+The [verbatim mapping table above](#which-v1-rules-ended-up-where) is the *why-it-shrank* argument — most of v1 was already in the system prompt. But that argument is a judgment, not a measurement. So in May 2026 we ran a small empirical A/B:
 
 - 3 cells: no CLAUDE.md / v1 upstream (65 lines) / v2 ours (19 lines)
 - 4 toy tasks targeting Karpathy's named pitfalls + N=10 follow-up on the most discriminating task (T1 ambiguous-bug)

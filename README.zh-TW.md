@@ -2,6 +2,14 @@
 
 一份精簡的 `CLAUDE.md`，補強 Claude Code 內建系統提示詞未涵蓋的部分；內容衍生自 [Andrej Karpathy 對 LLM 編碼陷阱的觀察](https://x.com/karpathy/status/2015883857489522876)。
 
+**`CLAUDE.md` 三條規則、一個 slash command（`/dec`），加上一份說「規則檔幾乎不動 Opus 4.7」的 A/B 實證——所以真正的槓桿是 `/dec` + Claude Code 內建的 `/goal`，不是規則檔本身。**
+
+為什麼要裝這份：
+
+- 你想要一份**不重述** Opus 4.7 系統提示詞的 `CLAUDE.md`（Karpathy 提到的「過度複雜化／外科手術式修改／不加推測性功能」都已經在系統提示詞裡，重複只會稀釋訊號）
+- 你想用 `/dec` 把模糊請求改寫成 **`/goal` 真的能驗證的契約**
+- 你想要在加更多規則到 prompt 前先看 **實證證據**（[N=40 A/B 測試](./EXPERIMENT.md)、[對照上游 v1 的逐行驗證 diff](#哪些-v1-規則被歸到哪裡)）
+
 [English](./README.md) | 繁體中文（台灣）
 
 ## 現況（2026 年 5 月）
@@ -138,6 +146,38 @@ OpenAI 的 Codex CLI 比 Claude Code 早 11 天於 [v0.128.0（2026-04-30）](ht
 
 整個指令檔就這樣。Karpathy 列出的其他陷阱（過度複雜化、順手重構、推測性功能、死碼累積、刪掉模型「看不順眼」的註解⋯⋯）都已經被 Claude Code 預設系統提示詞涵蓋；在這裡重述只會稀釋訊號。
 
+## 哪些 v1 規則被歸到哪裡
+
+[上游 v1](./archived/v1/CLAUDE.md) 有 4 大原則 × 每個 4–6 條 sub-rule（共 66 行）。v2 只剩 19 行。下表是**逐字驗證**過的對照——第三欄每一格都是我們在實際 Claude Code session 直接觀察到的系統提示詞原文，不是改寫過的近似句。[^sysprompt]
+
+| v1 條文 | v2 處置 | 系統提示詞逐字 quote |
+|---|---|---|
+| **Simplicity First** — 不加超出請求範圍的功能 | 刪 | "Don't add features, refactor, or introduce abstractions beyond what the task requires" |
+| **Simplicity First** — 單次使用的程式碼不抽象 | 刪 | "Three similar lines is better than a premature abstraction" |
+| **Simplicity First** — 不加沒人要的 flexibility / configurability | 刪 | "Don't design for hypothetical future requirements" |
+| **Simplicity First** — 不為不可能發生的場景寫錯誤處理 | 刪 | "Don't add error handling, fallbacks, or validation for scenarios that can't happen. Trust internal code and framework guarantees. Only validate at system boundaries" |
+| **Surgical Changes** — 不順手改鄰近程式碼 | 刪 | "A bug fix doesn't need surrounding cleanup; a one-shot operation doesn't need a helper" |
+| **Surgical Changes** — 沒人要你改前不要刪掉既有死碼 | 刪 | "Avoid backwards-compatibility hacks like renaming unused _vars... If you are certain that something is unused, you can delete it completely" |
+| **Surgical Changes** — 每一行改動都要對應到請求 | **保留**（重新命名） | *（無對應——這條是 v2 真正補強的）* |
+| **Think Before Coding** — 整個原則（4 條 sub-rule） | **3 刪 1 留**（留下的改名 Stop when confused） | *（無逐字對應——見下方說明）* |
+| **Goal-Driven Execution** — TDD 範例 + 多步計畫格式 | **改寫**為 Loop on declarative goals | *（無對應——這是 Karpathy 真正的洞見、留下但重新詮釋）* |
+
+關於 **Think Before Coding** —— 我們刪了它的三條 sub-rule（「明確說出假設」「列出多種解讀」「合理時要 push back」），但這三條**並非**逐字被系統提示詞涵蓋。最接近的段落是 `"For exploratory questions, respond in 2–3 sentences with a recommendation and the main tradeoff. Present it as something the user can redirect"`——意圖相近、但**不是完整替代**。我們還是刪了，因為 [A/B 實證](./EXPERIMENT.md) 顯示放入完整四條版本也沒能可靠觸發「停下來問」（T1 共 30 runs 中 0 次在動手前問澄清）。唯一保留的「不確定時停下來問」是因為它的動作最乾淨（直接停），不是因為其他三條被覆蓋。**這格是設計判斷、不是「逐字重複所以刪」的主張。**
+
+### 刪除的三個具體好處
+
+1. **訊號去稀釋**。在 `CLAUDE.md` 重述系統提示詞已有的內容，會給模型已經會做的事再加一份權重；新加進來的規則就要跟這些重複條目搶注意力。v2 的每一行都在說系統提示詞**沒說**的事。
+2. **降低非編碼任務的誤觸**。v1 的 TDD-first 範例（「為無效輸入寫測試、再讓它通過」）寫死了可測試情境。UI 微調、文案、設定檔編輯都沒有測試可寫——v1 框架會逼模型在不該發明驗證條件的地方發明驗證條件。v2 的 `## Loop on declarative goals` 改成把驗證條件的決定權還給使用者、不規定格式。
+3. **「更短不會更糟」的實證背書**。[N=40 A/B 測試](./EXPERIMENT.md) 顯示在 Opus 4.7 上、v1（65 行）／v2（19 行）／無 `CLAUDE.md` 三組無統計顯著差異。刪到只剩 19 行不會可測量地變差——而且檔案越短、與專案規則衝突時的 review 成本越低。
+
+### 但 v2 保留了 Karpathy 最強的一點——並把它搬到使用者端工具
+
+Karpathy 列的陷阱中、v2 *沒有*刪掉的那條最重要：**`Loop on declarative goals`**。它能活下來、第一個原因是系統提示詞沒涵蓋——但更關鍵的原因是、這件事的槓桿在**使用者端**、不在 LLM 自我約束。這也是為什麼 v2 同時提供 `/dec`：一個把命令式請求改寫成宣告式契約的 slash command、搭配 Claude Code 內建的 `/goal` evaluator。詳見本文上方「**`/dec`：「邊界設定器」，讓 `/goal` 真的會收斂**」一節。
+
+這個「policy / mechanism 分離」——LLM 處理「想要什麼」（high-level intent）、工具處理「怎麼達成」（deterministic execution）——在 2025–2026 的研究文獻中已經收斂成主流範式（[arxiv 2510.04607](https://arxiv.org/html/2510.04607v2)、[PDL arxiv 2410.19135](https://arxiv.org/pdf/2410.19135)）。`/dec` 是這個範式在 prompt 工程層的對應介面。
+
+[^sysprompt]: 第三欄的逐字 quote 是 2026-05-28 在 Claude Code CLI session 直接觀察到的 Opus 4.7 系統提示詞。完整觀測 snapshot 存於 [`archived/observed-system-prompts/2026-05-28-opus-4.7-cli.md`](./archived/observed-system-prompts/2026-05-28-opus-4.7-cli.md)（英文）——該檔案說明系統提示詞與 `CLAUDE.md` 注入在 session 結構中如何位置上可分離，並把表格每一條 quote 都對應到 snapshot 內精確位置。Claude Code 系統提示詞是 runtime 注入、Anthropic 並未公開文件化；未來 CLI／模型更新可能改變措辭。
+
 ## 安裝
 
 三條規則跟 `/dec` 指令各自獨立——任意組合都可以。
@@ -218,11 +258,9 @@ cd ~/.claude/external/andrej-karpathy-skills.TW && git pull
 
 本倉庫附 [`.cursor/rules/karpathy-guidelines.mdc`](.cursor/rules/karpathy-guidelines.mdc)，設定為 `alwaysApply: true`。詳情見 [`CURSOR.md`](./CURSOR.md)。
 
-## 為什麼新版這麼短 — 而 A/B 實證告訴我們什麼
+## A/B 實證告訴我們什麼
 
-最初的論證（基於讀 Opus 4.7 系統提示詞）：v1 大部分規則已被內建提示詞涵蓋、重述會稀釋訊號。完整 v1 → v2 逐行對照見 [`archived/v1/NOTE.md`](./archived/v1/NOTE.md#detailed-v1--v2-diff-for-claudemd)（英文）。
-
-這是觀察判斷、不是量測。所以 2026 年 5 月我們跑了小型 A/B 實證：
+上方那張 [v1→v2 逐字對照表](#哪些-v1-規則被歸到哪裡) 是「為什麼新版這麼短」的論證——v1 大部分內容已在系統提示詞裡。但這是觀察判斷、不是量測。所以 2026 年 5 月我們跑了小型 A/B 實證：
 
 - 3 組：無 CLAUDE.md / v1 上游版（65 行）/ v2 我們版（19 行）
 - 4 個誘發 Karpathy 痛點的 toy task + 最區分維度 T1 ambiguous-bug 加碼到每組 N=10
