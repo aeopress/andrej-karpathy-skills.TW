@@ -1,5 +1,7 @@
 # 受 Karpathy 啟發的 Claude Code 指引
 
+![/dec — 從命令式轉宣告式](./andrej-karpathy-skills.TW.png)
+
 一份精簡的 `CLAUDE.md`，補強 Claude Code 內建系統提示詞未涵蓋的部分；內容衍生自 [Andrej Karpathy 對 LLM 編碼陷阱的觀察](https://x.com/karpathy/status/2015883857489522876)。
 
 > **主要 repo**：[`aeopress/andrej-karpathy-skills.TW`](https://github.com/aeopress/andrej-karpathy-skills.TW)（原於 [`yelban/andrej-karpathy-skills.TW`](https://github.com/yelban/andrej-karpathy-skills.TW) 維護，現已封存）

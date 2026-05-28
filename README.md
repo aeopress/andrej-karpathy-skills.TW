@@ -1,5 +1,7 @@
 # Karpathy-Inspired Claude Code Guidelines
 
+![/dec — Imperative to Declarative](./andrej-karpathy-skills.TW.png)
+
 A small `CLAUDE.md` that complements Claude Code's built-in guidance, derived from [Andrej Karpathy's observations](https://x.com/karpathy/status/2015883857489522876) on LLM coding pitfalls.
 
 > **Source of truth**: [`aeopress/andrej-karpathy-skills.TW`](https://github.com/aeopress/andrej-karpathy-skills.TW) (formerly maintained at [`yelban/andrej-karpathy-skills.TW`](https://github.com/yelban/andrej-karpathy-skills.TW), now archived)
