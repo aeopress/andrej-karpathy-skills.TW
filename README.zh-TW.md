@@ -4,6 +4,8 @@
 
 一份精簡的 `CLAUDE.md`，補強 Claude Code 內建系統提示詞未涵蓋的部分；內容衍生自 [Andrej Karpathy 對 LLM 編碼陷阱的觀察](https://x.com/karpathy/status/2015883857489522876)。
 
+[English](./README.md) | 繁體中文（台灣）
+
 > **主要 repo**：[`aeopress/andrej-karpathy-skills.TW`](https://github.com/aeopress/andrej-karpathy-skills.TW)（原於 [`yelban/andrej-karpathy-skills.TW`](https://github.com/yelban/andrej-karpathy-skills.TW) 維護，現已封存）
 
 **`CLAUDE.md` 三條規則、一個 slash command（`/dec`），加上一份說「規則檔幾乎不動 Opus 4.7」的 A/B 實證——所以真正的槓桿是 `/dec` + Claude Code 內建的 `/goal`，不是規則檔本身。**
@@ -13,8 +15,6 @@
 - 你想要一份**不重述** Opus 4.7 系統提示詞的 `CLAUDE.md`（Karpathy 提到的「過度複雜化／外科手術式修改／不加推測性功能」都已經在系統提示詞裡，重複只會稀釋訊號）
 - 你想用 `/dec` 把模糊請求改寫成 **`/goal` 真的能驗證的契約**
 - 你想要在加更多規則到 prompt 前先看 **實證證據**（[N=40 A/B 測試](./EXPERIMENT.md)、[對照上游 v1 的逐行驗證 diff](#哪些-v1-規則被歸到哪裡)）
-
-[English](./README.md) | 繁體中文（台灣）
 
 ## 現況（2026 年 5 月）
 

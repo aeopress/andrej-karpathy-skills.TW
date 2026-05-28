@@ -4,6 +4,8 @@
 
 A small `CLAUDE.md` that complements Claude Code's built-in guidance, derived from [Andrej Karpathy's observations](https://x.com/karpathy/status/2015883857489522876) on LLM coding pitfalls.
 
+English | [繁體中文（台灣）](./README.zh-TW.md)
+
 > **Source of truth**: [`aeopress/andrej-karpathy-skills.TW`](https://github.com/aeopress/andrej-karpathy-skills.TW) (formerly maintained at [`yelban/andrej-karpathy-skills.TW`](https://github.com/yelban/andrej-karpathy-skills.TW), now archived)
 
 **Three rules in `CLAUDE.md`, one slash command (`/dec`), and an A/B test that says the rules barely move Opus 4.7 — so the real leverage is `/dec` + Claude Code's built-in `/goal`, not the rules file.**
@@ -13,8 +15,6 @@ Why you'd install this:
 - You want a `CLAUDE.md` that **does not duplicate** Opus 4.7's system prompt (Karpathy's *over-complication / surgical changes / no speculative features* points already live there — repeating them dilutes signal)
 - You want `/dec` to rewrite vague requests into **machine-checkable contracts** that `/goal` can actually verify
 - You want the **empirical receipts** ([N=40 A/B test](./EXPERIMENT.md), [verified line-by-line diff against upstream v1](#which-v1-rules-ended-up-where)) before adding more rules to your prompt
-
-English | [繁體中文（台灣）](./README.zh-TW.md)
 
 ## Status (May 2026)
 
