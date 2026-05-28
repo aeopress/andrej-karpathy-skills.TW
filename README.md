@@ -2,7 +2,7 @@
 
 A small `CLAUDE.md` that complements Claude Code's built-in guidance, derived from [Andrej Karpathy's observations](https://x.com/karpathy/status/2015883857489522876) on LLM coding pitfalls.
 
-> **Source of truth**: [`yelban/andrej-karpathy-skills.TW`](https://github.com/yelban/andrej-karpathy-skills.TW) (also mirrored at [`aeopress/andrej-karpathy-skills.TW`](https://github.com/aeopress/andrej-karpathy-skills.TW))
+> **Source of truth**: [`aeopress/andrej-karpathy-skills.TW`](https://github.com/aeopress/andrej-karpathy-skills.TW) (formerly maintained at [`yelban/andrej-karpathy-skills.TW`](https://github.com/yelban/andrej-karpathy-skills.TW), now archived)
 
 **Three rules in `CLAUDE.md`, one slash command (`/dec`), and an A/B test that says the rules barely move Opus 4.7 — so the real leverage is `/dec` + Claude Code's built-in `/goal`, not the rules file.**
 
@@ -194,14 +194,14 @@ The three reminders and the `/dec` command are independent — pick any combinat
 **Option A: Claude Code plugin** — installs only the `/dec` command (namespaced), auto-updates via marketplace. The skill that wrapped the three reminders was removed in v3.0.0 after the empirical A/B test showed it had no measurable effect (see [`EXPERIMENT.md`](./EXPERIMENT.md)). For the always-on rules, use Option B, C, or D below.
 
 ```
-/plugin marketplace add yelban/andrej-karpathy-skills.TW
+/plugin marketplace add aeopress/andrej-karpathy-skills.TW
 /plugin install andrej-karpathy-skills@karpathy-skills
 ```
 
 **Option B: `CLAUDE.md` per-project** — three reminders always loaded for that project.
 
 ```bash
-curl -o CLAUDE.md https://raw.githubusercontent.com/yelban/andrej-karpathy-skills.TW/main/CLAUDE.md
+curl -o CLAUDE.md https://raw.githubusercontent.com/aeopress/andrej-karpathy-skills.TW/main/CLAUDE.md
 ```
 
 **Option C: Manual `/dec` command** — short invocation without the plugin namespace. `/dec` is a vendor-agnostic prompt template with no project-specific state, so installing it globally is the only sensible scope.
@@ -209,7 +209,7 @@ curl -o CLAUDE.md https://raw.githubusercontent.com/yelban/andrej-karpathy-skill
 ```bash
 mkdir -p ~/.claude/commands
 curl -o ~/.claude/commands/dec.md \
-  https://raw.githubusercontent.com/yelban/andrej-karpathy-skills.TW/main/plugin/commands/dec.md
+  https://raw.githubusercontent.com/aeopress/andrej-karpathy-skills.TW/main/plugin/commands/dec.md
 ```
 
 **Option D: `git clone` + symlink** — `/dec` auto-updates via `git pull`; `CLAUDE.md` is copied as a starting point you can freely edit per project.
@@ -217,7 +217,7 @@ curl -o ~/.claude/commands/dec.md \
 ```bash
 # 1. Clone once (any location works; example uses ~/.claude/external/)
 mkdir -p ~/.claude/external
-git clone https://github.com/yelban/andrej-karpathy-skills.TW \
+git clone https://github.com/aeopress/andrej-karpathy-skills.TW \
   ~/.claude/external/andrej-karpathy-skills.TW
 
 # 2. Symlink the short /dec command globally (the command itself is stateless,
