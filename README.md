@@ -283,4 +283,6 @@ This repository is a Traditional Chinese (Taiwan) localization fork of [`forrest
 
 ## License
 
-MIT
+[MIT](./LICENSE) — Copyright © 2026 yelban.
+
+See [Relationship to upstream](#relationship-to-upstream) for attribution.

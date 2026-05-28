@@ -280,4 +280,6 @@ cd ~/.claude/external/andrej-karpathy-skills.TW && git pull
 
 ## 授權
 
-MIT
+[MIT](./LICENSE) — Copyright © 2026 yelban。
+
+詳細出處說明見[與上游的關係](#與上游的關係)章節。
