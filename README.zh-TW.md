@@ -154,7 +154,7 @@ OpenAI 的 Codex CLI 比 Claude Code 早 11 天，在 [v0.128.0（2026-04-30）]
 
 [上游 v1](./archived/v1/CLAUDE.md) 有 4 大原則 × 每個 4–6 條 sub-rule（共 66 行）。v2 只剩 19 行。下表是**逐字驗證**過的對照——第三欄每一格都是我們在實際 Claude Code session 直接觀察到的系統提示詞原文，不是改寫過的近似句。[^sysprompt]
 
-> **更新——Opus 4.8（2026-05-29）：** 4.8 把 **lean system prompt** 設為 default、下表第三欄那**八條 quote 在 4.8 全部消失了**——4.7 的 `# Doing tasks` / `# Executing actions with care` 大段被壓縮成 5 條 bullet 的 `# Harness`。這**不推翻**論點：Anthropic 官方數據說 4.8「比 4.7 漏放程式碼瑕疵的機率低約 4 倍」、判斷更精準——也就是 guardrail 從 *prompt* 移到了 *post-training（model weights）*。所以在 `CLAUDE.md` 重述它們仍是浪費訊號、而 prompt 越乾淨、19 行的檔案越容易保持精準。完整 4.7→4.8 diff 與自我觀測 caveat 見 [`2026-05-29-opus-4.8-cli.md`](./archived/observed-system-prompts/2026-05-29-opus-4.8-cli.md)。下表因此是**對 4.7 歷史準確**（已獨立驗證）、並加註說明、不是默示它符合當前 default prompt。
+> **更新——Opus 4.8（2026-05-29）：** 4.8 把 **lean system prompt** 設為 default、下表第三欄那**八條 quote 在 4.8 全部消失了**——4.7 的 `# Doing tasks` / `# Executing actions with care` 大段被壓縮成 5 條 bullet 的 `# Harness`。這**不推翻**論點——我們在 4.8 上重跑了實驗確認。T1（N=10、固定 automated scorer）上「兩 bug 都修」從 **33% 躍升到 90%**（Fisher p=1.1e-5、少漏約 6.7 倍、吻合 Anthropic「漏放瑕疵機率低約 4 倍」），而三組（v1 65 行／v2 19 行／無 `CLAUDE.md`）**統計上仍持平**（兩兩 p ≥ 0.47）。也就是 guardrail 從 *prompt* 移到了 *post-training（model weights）*、不是消失——CLAUDE.md flavor 依然測不出效應。重述模型已內化的規則仍是浪費訊號、而 prompt 越乾淨、19 行的檔案越容易保持精準。完整 4.7→4.8 diff 見 [`2026-05-29-opus-4.8-cli.md`](./archived/observed-system-prompts/2026-05-29-opus-4.8-cli.md)；重跑資料與 caveat 見 [`EXPERIMENT.md`](./EXPERIMENT.md)（§ Opus 4.8 re-run）。下表因此是**對 4.7 歷史準確**（已獨立驗證）、並加註說明、不是默示它符合當前 default prompt。
 
 | v1 條文 | v2 處置 | 系統提示詞逐字 quote |
 |---|---|---|

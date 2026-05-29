@@ -8,6 +8,36 @@
 
 **正確結論**：在這個 task set 上、Opus 4.7 自身約 70% T1 正確率，CLAUDE.md（不論 v1 或 v2）**沒有可測量的效應**。維持 v2 不需要被 v1 取代、但要在 README 誠實標示「實證未顯示 v2 比 v1 更差也沒更好」。
 
+## 後續：Opus 4.8 re-run（2026-05-29、T1 N=10）
+
+Opus 4.8 出後（lean system prompt 設 default、把原 prompt 裡的 explicit guardrail 全部移除、見 [`archived/observed-system-prompts/2026-05-29-opus-4.8-cli.md`](./archived/observed-system-prompts/2026-05-29-opus-4.8-cli.md)），用同一套 harness 重跑 T1 N=10 三 cell。**這次用 automated scorer（[`harness/analyze_t1_auto.py`](./harness/analyze_t1_auto.py)、純 diff grep + response text、非 Sonnet judge）**——嚴格定義「兩 bug 都修才算 correct」，絕對值與 Phase 2 的 Sonnet judge 不可直接比，但 4.7↔4.8 用同一把尺有效。
+
+### 結果（兩 bug 都修率）
+
+| Cell | 4.7（同 scorer 重算 baseline）| 4.8 |
+|---|---|---|
+| A-none | 3/10 | **8/10** |
+| B-v1（65 行）| 4/10 | **9/10** |
+| C-v2（19 行）| 3/10 | **10/10** |
+
+### 兩個判定
+
+1. **Model-level：4.8 顯著優於 4.7**。pooled「兩 bug 都修」33% → 90%、Fisher exact p = 1.1e-5、漏修率 67% → 10%（**少漏 6.7 倍**）——比 Anthropic 官方「4.8 比 4.7 漏放程式碼瑕疵機率低約 4 倍」還強。
+2. **Cell-level：CLAUDE.md flavor 在 4.8 仍無顯著差異**。B-v1(9) vs C-v2(10) p=1.0、B-v1(9) vs A-none(8) p=1.0、A-none(8) vs C-v2(10) p=0.47——全部 > 0.05。
+
+### 對 Reading A / B 的判定
+
+4.8 snapshot 檔列了兩種解讀，本次數據做出判定：
+
+- **Reading B 否定**：若「4.8 lean prompt 移除 guardrail → v1 完整規則重新有用」，B-v1 應明顯領先——但 B-v1(9) 沒優於 C-v2(10) 或 A-none(8)，19 行精簡版甚至略高。
+- **Reading A 強力支持**：4.8 移除 explicit guardrail 文字、但抓 bug 行為**不降反升**（33% → 90%）——guardrail 移到了 post-training（model weights），CLAUDE.md 重述它們仍無邊際效應。thesis 在 4.8 上更成立。
+
+### caveat
+
+1. **automated scorer 非 Sonnet judge**——只信 diff-based 的 bug_a / bug_b / final_state_correct（純 grep、deterministic）；response-text signals（asked_clarification / silent_assumption）在 4.7 backup 上有 false positive（算出 asked 3/1/3、但原 Sonnet judge 是 0），**不採信**。
+2. 只跑 **T1、N=10**；effort=medium（與 4.7 baseline 一致、非 4.8 default 的 high）；未重跑 T2/T3/T4。
+3. 4.8 raw runs 在 `harness/runs-4.8-T1/`、4.7 baseline 在 `harness/runs-4.7-backup/`（皆 local、未進 git——同原實驗 `runs/` 慣例）。任何人可 `MODEL=claude-opus-4-8 TASKS=T1 CELLS="A-none B-v1 C-v2" SEEDS="1 2 3 4 5 6 7 8 9 10" bash harness/run-all.sh` 後 `python3 harness/analyze_t1_auto.py runs` 重現。
+
 ## 重大教訓
 
 **N=3 sample 反向翻盤**——這是 plan-stage 就列為 caveat 的風險，加碼後成真。任何只有 N=3 的 LLM A/B 結論都應該預設為 **uncertain until N ≥ 10 confirmed**。

@@ -39,7 +39,7 @@ cd "$RUN_DIR/repo"
 
 set +e
 echo "$PROMPT" | claude -p \
-  --model claude-opus-4-7 \
+  --model "${MODEL:-claude-opus-4-7}" \
   --effort medium \
   --max-budget-usd 2.00 \
   --output-format stream-json \

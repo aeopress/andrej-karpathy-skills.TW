@@ -26,6 +26,8 @@ read -r -a TASKS <<< "${TASKS:-T1 T2 T3 T4}"
 read -r -a CELLS <<< "${CELLS:-A-none B-v1 C-v2}"
 read -r -a SEEDS <<< "${SEEDS:-1 2 3}"
 JOBS="${JOBS:-4}"
+export MODEL="${MODEL:-claude-opus-4-7}"  # propagate to parallel subshells; override e.g. MODEL=claude-opus-4-8
+echo "[run-all] model=$MODEL"
 
 mkdir -p "$HARNESS/runs"
 
