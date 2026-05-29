@@ -154,6 +154,8 @@ OpenAI 的 Codex CLI 比 Claude Code 早 11 天，在 [v0.128.0（2026-04-30）]
 
 [上游 v1](./archived/v1/CLAUDE.md) 有 4 大原則 × 每個 4–6 條 sub-rule（共 66 行）。v2 只剩 19 行。下表是**逐字驗證**過的對照——第三欄每一格都是我們在實際 Claude Code session 直接觀察到的系統提示詞原文，不是改寫過的近似句。[^sysprompt]
 
+> **更新——Opus 4.8（2026-05-29）：** 4.8 把 **lean system prompt** 設為 default、下表第三欄那**八條 quote 在 4.8 全部消失了**——4.7 的 `# Doing tasks` / `# Executing actions with care` 大段被壓縮成 5 條 bullet 的 `# Harness`。這**不推翻**論點：Anthropic 官方數據說 4.8「比 4.7 漏放程式碼瑕疵的機率低約 4 倍」、判斷更精準——也就是 guardrail 從 *prompt* 移到了 *post-training（model weights）*。所以在 `CLAUDE.md` 重述它們仍是浪費訊號、而 prompt 越乾淨、19 行的檔案越容易保持精準。完整 4.7→4.8 diff 與自我觀測 caveat 見 [`2026-05-29-opus-4.8-cli.md`](./archived/observed-system-prompts/2026-05-29-opus-4.8-cli.md)。下表因此是**對 4.7 歷史準確**（已獨立驗證）、並加註說明、不是默示它符合當前 default prompt。
+
 | v1 條文 | v2 處置 | 系統提示詞逐字 quote |
 |---|---|---|
 | **Simplicity First** — 不加超出請求範圍的功能 | 刪 | "Don't add features, refactor, or introduce abstractions beyond what the task requires" |
@@ -180,7 +182,7 @@ Karpathy 列的陷阱中、v2 *沒有*刪掉的那條最重要：**`Loop on decl
 
 這個「policy / mechanism 分離」——LLM 處理「想要什麼」（high-level intent）、工具處理「怎麼達成」（deterministic execution）——在 2025–2026 的研究文獻中已經收斂成主流範式（[arxiv 2510.04607](https://arxiv.org/html/2510.04607v2)、[PDL arxiv 2410.19135](https://arxiv.org/pdf/2410.19135)）。`/dec` 是這個範式在 prompt 工程層的對應介面。
 
-[^sysprompt]: 第三欄的逐字 quote 是 2026-05-28 在 Claude Code CLI session 直接觀察到的 Opus 4.7 系統提示詞。完整觀測 snapshot 存於 [`archived/observed-system-prompts/2026-05-28-opus-4.7-cli.md`](./archived/observed-system-prompts/2026-05-28-opus-4.7-cli.md)（英文）——該檔案說明系統提示詞與 `CLAUDE.md` 注入，在 session 結構中如何位置上可分離，並把表格每一條 quote 都對應到 snapshot 內精確位置。Claude Code 系統提示詞是 runtime 注入、Anthropic 並未公開文件化；未來 CLI／模型更新可能改變措辭。
+[^sysprompt]: 第三欄的逐字 quote 是 2026-05-28 在 Claude Code CLI session 直接觀察到的 Opus 4.7 系統提示詞。完整觀測 snapshot 存於 [`archived/observed-system-prompts/2026-05-28-opus-4.7-cli.md`](./archived/observed-system-prompts/2026-05-28-opus-4.7-cli.md)（英文）——該檔案說明系統提示詞與 `CLAUDE.md` 注入，在 session 結構中如何位置上可分離，並把表格每一條 quote 都對應到 snapshot 內精確位置。**Opus 4.8（2026-05-29）改用 lean prompt、把這八條 quote 全部拿掉**——4.7→4.8 diff 見 [`2026-05-29-opus-4.8-cli.md`](./archived/observed-system-prompts/2026-05-29-opus-4.8-cli.md)。Claude Code 系統提示詞是 runtime 注入、Anthropic 並未公開文件化；措辭隨 CLI／模型更新改變（4.7→4.8 是一次大改）。
 
 ## 安裝
 
