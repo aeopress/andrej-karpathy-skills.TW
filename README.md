@@ -8,17 +8,19 @@ English | [繁體中文（台灣）](./README.zh-TW.md)
 
 > **Source of truth**: [`aeopress/andrej-karpathy-skills.TW`](https://github.com/aeopress/andrej-karpathy-skills.TW) (formerly maintained at [`yelban/andrej-karpathy-skills.TW`](https://github.com/yelban/andrej-karpathy-skills.TW), now archived)
 
-**Three rules in `CLAUDE.md`, one slash command (`/dec`), and an A/B test that says the rules barely move Opus 4.7 — so the real leverage is `/dec` + Claude Code's built-in `/goal`, not the rules file.**
+**Three rules in `CLAUDE.md`, one slash command (`/dec`), and an A/B test — re-run on Opus 4.8 — that says the rules barely move either model. 4.8's new lean system prompt validates the direction: Anthropic itself stripped the explicit guardrails. So the real leverage is `/dec` + Claude Code's built-in `/goal`, not the rules file.**
 
 Why you'd install this:
 
-- You want a `CLAUDE.md` that **does not duplicate** Opus 4.7's system prompt (Karpathy's *over-complication / surgical changes / no speculative features* points already live there — repeating them dilutes signal)
+- You want a `CLAUDE.md` that **does not duplicate** Claude Code's system prompt (Karpathy's *over-complication / surgical changes / no speculative features* points already live there — and 4.8 made the prompt even leaner, so repeating them dilutes signal more than ever)
 - You want `/dec` to rewrite vague requests into **machine-checkable contracts** that `/goal` can actually verify
 - You want the **empirical receipts** ([N=40 A/B test](./EXPERIMENT.md), [verified line-by-line diff against upstream v1](#which-v1-rules-ended-up-where)) before adding more rules to your prompt
 
-## Status (May 2026)
+## Status (Opus 4.8 era · May 2026)
 
-Claude Code's system prompt (Opus 4.7 / Sonnet 4.6 era) now includes most of the generic "don't over-engineer / make surgical changes / don't add speculative features" guidance that earlier versions of this skill provided. **This version intentionally keeps only what the system prompt still does not cover, and reframes the "leverage" point as a user-side prompting guide.**
+Anthropic's own Claude Code prompt evolved the same way this skill did. v1→v2 stripped the explicit guardrails the model had internalized (66 lines → 19). Opus 4.7 had already baked most of them into a verbose system prompt; **Opus 4.8 (2026-05-28) went further and ships a *lean* prompt that drops them entirely** — they now live in post-training, not prompt text.
+
+We re-ran our A/B on 4.8 (T1, N=10): bug-catching jumped **33% → 90%** while the three `CLAUDE.md` variants (v1 / v2 / none) stayed statistically flat. The model absorbed the discipline; the remaining leverage is user-side — `/dec` + `/goal`. **This version intentionally keeps only what the system prompt still does not cover, and reframes the "leverage" point as a user-side prompting guide.**
 
 The earlier full-rules version lives in [`archived/v1/`](./archived/v1/) for reference.
 
@@ -283,7 +285,7 @@ Full data, scripts, caveats, and the Phase 1 (N=3) result that initially looked 
 
 ## Relationship to upstream
 
-This repository is a Traditional Chinese (Taiwan) localization fork of [`forrestchang/andrej-karpathy-skills`](https://github.com/forrestchang/andrej-karpathy-skills), updated for the Claude Code Opus 4.7 era. Plugin / marketplace names intentionally match upstream; the README is bilingual (English + 繁體中文).
+This repository is a Traditional Chinese (Taiwan) localization fork of [`forrestchang/andrej-karpathy-skills`](https://github.com/forrestchang/andrej-karpathy-skills), updated for the Claude Code Opus 4.7 → 4.8 era. Plugin / marketplace names intentionally match upstream; the README is bilingual (English + 繁體中文).
 
 ## License
 

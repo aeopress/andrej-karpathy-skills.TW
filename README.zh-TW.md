@@ -8,17 +8,19 @@
 
 > **主要 repo**：[`aeopress/andrej-karpathy-skills.TW`](https://github.com/aeopress/andrej-karpathy-skills.TW)（原於 [`yelban/andrej-karpathy-skills.TW`](https://github.com/yelban/andrej-karpathy-skills.TW) 維護，現已封存）
 
-**`CLAUDE.md` 三條規則、一個 slash command（`/dec`），加上一份說「規則檔幾乎不動 Opus 4.7」的 A/B 實證——所以真正的槓桿是 `/dec` + Claude Code 內建的 `/goal`，不是規則檔本身。**
+**`CLAUDE.md` 三條規則、一個 slash command（`/dec`），加上一份**已在 Opus 4.8 重跑**的 A/B 實證——說規則檔對兩個世代都幾乎不動。4.8 全新的 lean system prompt 印證了這個方向：Anthropic 自己把 explicit guardrail 拿掉了。所以真正的槓桿是 `/dec` + Claude Code 內建的 `/goal`，不是規則檔本身。**
 
 為什麼要裝這份：
 
-- 你想要一份**不重述** Opus 4.7 系統提示詞的 `CLAUDE.md`（Karpathy 提到的「過度複雜化／外科手術式修改／不加推測性功能」都已經在系統提示詞裡，重複只會稀釋訊號）
+- 你想要一份**不重述** Claude Code 系統提示詞的 `CLAUDE.md`（Karpathy 提到的「過度複雜化／外科手術式修改／不加推測性功能」都已經在系統提示詞裡——而 4.8 把提示詞改得更精簡，重複只會比以前更稀釋訊號）
 - 你想用 `/dec` 把模糊請求改寫成 **`/goal` 真的能驗證的契約**
 - 你想要在加更多規則到 prompt 前先看 **實證證據**（[N=40 A/B 測試](./EXPERIMENT.md)、[對照上游 v1 的逐行驗證 diff](#哪些-v1-規則被歸到哪裡)）
 
-## 現況（2026 年 5 月）
+## 現況（Opus 4.8 時代 · 2026 年 5 月）
 
-Claude Code 在 Opus 4.7 / Sonnet 4.6 時代的預設系統提示詞已經內建了大部分通用的「不要過度設計／外科手術式修改／不要加沒人要的功能」指引 — 這些原本是本 skill 第一版的主要內容。**新版刻意只保留系統提示詞還未涵蓋的部分，並把 Karpathy 真正的「leverage」洞見重新定位為使用者端的 prompting 指引。**
+Anthropic 自己的 Claude Code 提示詞、演進方向跟這個 skill 一模一樣。v1→v2 拿掉了模型已內化的 explicit guardrail（66 行 → 19 行）。Opus 4.7 已經把大部分 guardrail 塞進一份冗長的系統提示詞；**Opus 4.8（2026-05-28）更進一步、改用 *lean* prompt 把它們整段拿掉**——這些規則現在活在 post-training（model weights）、不在 prompt 文字裡。
+
+我們在 4.8 上重跑了 A/B（T1、N=10）：抓 bug 率從 **33% 躍升到 90%**、而三組 `CLAUDE.md`（v1／v2／無）統計上仍持平。模型把紀律吸收進去了；剩下的槓桿在使用者端——`/dec` + `/goal`。**新版刻意只保留系統提示詞還未涵蓋的部分，並把 Karpathy 真正的「leverage」洞見重新定位為使用者端的 prompting 指引。**
 
 舊版完整四原則保留在 [`archived/v1/`](./archived/v1/) 供參考。
 
@@ -280,7 +282,7 @@ cd ~/.claude/external/andrej-karpathy-skills.TW && git pull
 
 ## 與上游的關係
 
-本倉庫是 [`forrestchang/andrej-karpathy-skills`](https://github.com/forrestchang/andrej-karpathy-skills) 的繁體中文（台灣）在地化 fork，為 Claude Code Opus 4.7 時代更新內容。Plugin / marketplace 名稱刻意與上游一致；README 為雙語（英文 + 繁體中文）。
+本倉庫是 [`forrestchang/andrej-karpathy-skills`](https://github.com/forrestchang/andrej-karpathy-skills) 的繁體中文（台灣）在地化 fork，為 Claude Code Opus 4.7 → 4.8 時代更新內容。Plugin / marketplace 名稱刻意與上游一致；README 為雙語（英文 + 繁體中文）。
 
 ## 授權
 
